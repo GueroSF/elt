@@ -11,6 +11,7 @@ services:
       - "127.0.0.1:8080:80"
 
   elt-php-fpm:
+    container_name: elt-php-fpm
     build:
       args:
         user: user
