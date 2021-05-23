@@ -2,7 +2,7 @@
 переходим в директорию docker
 запускаем ```docker-compose up --build```
 
-"заходим" в контейнер ```docker exec -it tr-php-fpm fish```
+"заходим" в контейнер ```docker exec -it elt-php-fpm fish```
 
 
 устанавливаем зависимости ```composer install```
