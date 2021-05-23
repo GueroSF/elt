@@ -1,5 +1,5 @@
 {
-    "name": "test",
+    "name": "elt/task",
     "description": "elt test",
     "autoload": {
         "psr-4": {
@@ -34,7 +34,6 @@
         }
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^5.2",
         "symfony/maker-bundle": "^1.31"
     }
 }
