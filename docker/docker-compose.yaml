@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+
+  elt-nginx:
+    image: nginx:alpine
+    working_dir: /app
+    volumes:
+      - ./../:/app
+      - ./nginx/includes/:/etc/nginx/conf.d/
+    ports:
+      - "127.0.0.1:8080:80"
+
+  elt-php-fpm:
+    build:
+      args:
+        user: user
+        uid: 1000
+      context: ./php
+    working_dir: /app
+    volumes:
+      - ./../:/app
+      - ./php/php-fpm-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini

@@ -1,0 +1,25 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $delaySecond: 10
+            App\Interfaces\GuestbookInterface: App\Service\XmlGuestbook
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Service\XmlGuestbook:
+        arguments:
+            $file: '%env(GUESTBOOK_FILE)%'

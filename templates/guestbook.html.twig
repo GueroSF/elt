@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    <script>
+        const label = {0: 'Редактировать', 1: 'Отмена'};
+        document.querySelectorAll('.edit_form').forEach(function(element) {
+            let index = 1;
+            element.querySelector('button[type="button"]').addEventListener('click', function() {
+                this.innerText = label[index];
+                element.querySelectorAll('.field').forEach(function(el) {
+                    index = + el.classList.toggle('hidden');
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .post {
+            padding: 5px;
+            border: 1px solid grey;
+        }
+
+        .comment {
+            margin-left: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% macro print_comment(comments, postId) %}
+    <div class="comment">
+        {% if comments[postId] is defined %}
+            {% for comment in comments[postId] %}
+                <div>
+                    <span>{{ comment.text }}</span>
+                    <small><small>{{ comment.createdAt | date('Y.m.d H:s') }}</small></small>
+                </div>
+                <div>
+                    <form method="post" action="{{ path('guestbook_create_comment') }}">
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <textarea name="comment" required></textarea>
+                        <button type="submit">Добавить коммент</button>
+                    </form>
+                </div>
+                {{ _self.print_comment(comments, comment.id) }}
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+{% block body %}
+    <div>
+        <form method="post" action="{{ path('guestbook_create_post') }}">
+            <fieldset>
+                <legend>Добавить новый отзыв</legend>
+                <label>
+                    <textarea name="text"></textarea>
+                </label>
+                <button type="submit"{% if not canSave %} disabled{% endif %}>Добавить</button>
+            </fieldset>
+        </form>
+    </div>
+    <div>
+        {% if posts | length > 0 %}
+            {% for post in posts %}
+                <div class="post">
+                    <div>
+                        <div>{{ post.text }}</div>
+                        <div>
+                            <form class="edit_form" method="post" action="{{ path('guestbook_update_post') }}">
+                                <input type="hidden" name="post_id" value="{{ post.id }}">
+                                <textarea class="field hidden" name="text">{{ post.text }}</textarea>
+                                <button class="field hidden" type="submit">Обновить</button>
+                                <button type="button">Редактировать</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+                        <small>{{ post.createdAt | date('Y.m.d H:s') }}</small>
+                    </div>
+                    <div>
+                        <form method="post" action="{{ path('guestbook_create_comment') }}">
+                            <input type="hidden" name="parent_id" value="{{ post.id }}">
+                            <textarea name="comment" required></textarea>
+                            <button type="submit">Добавить коммент</button>
+                        </form>
+                    </div>
+                    {{ _self.print_comment(comments, post.id) }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <h3>постов еще нет</h3>
+        {% endif %}
+    </div>
+
+{% endblock %}
